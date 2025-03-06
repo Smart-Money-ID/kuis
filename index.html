@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis Smart Money</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        h2 { text-align: center; }
+        .question { margin-bottom: 20px; text-align: left; }
+        .result { display: none; font-weight: bold; margin-top: 20px; }
+        button { display: block; width: 100%; padding: 10px; background: #28a745; color: white; border: none; cursor: pointer; margin-top: 10px; }
+        button:hover { background: #218838; }
+        label { display: block; text-align: left; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Kuis Smart Money</h2>
+        <div id="quiz"></div>
+        <button id="nextButton" onclick="nextQuestion()">Mulai</button>
+        <div class="result" id="result"></div>
+    </div>
+    
+    <script>
+        const questions = [
+    {
+        "question": "Kamu mendapat uang saku tambahan. Apa yang kamu lakukan?",
+        "options": [
+            {"text": "Menyisihkan sebagian untuk tabungan, sebagian untuk keinginan", "score": 3},
+            {"text": "Menabung seluruhnya untuk kebutuhan mendatang", "score": 4},
+            {"text": "Menghabiskannya untuk bersenang-senang tanpa pikir panjang", "score": 1},
+            {"text": "Menggunakannya untuk membeli barang yang sedang diinginkan", "score": 2}
+        ]
+    },
+    {
+        "question": "Kamu ingin membeli skincare mahal yang sedang viral, tapi uangmu terbatas. Apa yang kamu lakukan?",
+        "options": [
+            {"text": "Mencari alternatif produk yang lebih murah tetapi tetap berkualitas", "score": 3},
+            {"text": "Tetap membeli meskipun harus mengorbankan uang tabungan", "score": 2},
+            {"text": "Membeli hanya karena teman-teman juga menggunakannya", "score": 1},
+            {"text": "Meneliti apakah produk tersebut benar-benar cocok sebelum membeli", "score": 4}
+        ]
+    },
+    {
+        "question": "Teman-temanmu mengajak nongkrong di tempat mahal, tetapi uangmu terbatas. Apa yang kamu lakukan?",
+        "options": [
+            {"text": "Menggunakan semua uang tanpa pikir panjang", "score": 1},
+            {"text": "Menolak dengan sopan dan mengajak mereka ke tempat yang lebih murah", "score": 4},
+            {"text": "Mengikuti mereka tetapi tetap mengatur pengeluaran", "score": 3},
+            {"text": "Meminjam uang atau mengorbankan tabungan untuk ikut", "score": 2}
+        ]
+    },
+    {
+        "question": "Kamu sedang menginginkan gadget baru, tapi HP lama masih berfungsi dengan baik. Apa yang kamu pilih?",
+        "options": [
+            {"text": "Tetap menggunakan HP lama dan menabung untuk upgrade nanti", "score": 4},
+            {"text": "Membeli gadget baru dengan mencari promo atau cicilan ringan", "score": 3},
+            {"text": "Membeli gadget baru dengan menghabiskan tabungan", "score": 2},
+            {"text": "Memaksakan membeli dengan berutang tanpa perencanaan", "score": 1}
+        ]
+    },
+    {
+        "question": "Kamu ingin membeli pakaian baru, tetapi juga butuh uang untuk keperluan sekolah. Apa keputusanmu?",
+        "options": [
+            {"text": "Prioritaskan keperluan sekolah dan menunda membeli pakaian baru", "score": 4},
+            {"text": "Membeli pakaian baru tetapi dengan harga yang terjangkau", "score": 3},
+            {"text": "Mengorbankan keperluan sekolah untuk membeli pakaian lebih keren", "score": 2},
+            {"text": "Menghabiskan semua uang untuk fashion tanpa mempertimbangkan keperluan lain", "score": 1}
+        ]
+    },
+    {
+        "question": "Kamu mendapat uang hadiah dari keluarga. Bagaimana cara menggunakannya?",
+        "options": [
+            {"text": "Menabung sebagian besar dan menggunakan sedikit untuk kesenangan", "score": 4},
+            {"text": "Menggunakan setengahnya untuk keinginan, setengahnya ditabung", "score": 3},
+            {"text": "Langsung membeli barang yang diinginkan tanpa pertimbangan", "score": 2},
+            {"text": "Menghabiskannya dalam sehari untuk hal-hal tidak perlu", "score": 1}
+        ]
+    },
+    {
+        "question": "Ada diskon besar-besaran di toko online. Apa yang kamu lakukan?",
+        "options": [
+            {"text": "Membeli hanya jika barang tersebut memang dibutuhkan", "score": 4},
+            {"text": "Membeli dengan pertimbangan anggaran yang tersedia", "score": 3},
+            {"text": "Membeli banyak barang hanya karena diskon besar", "score": 2},
+            {"text": "Menghabiskan semua uang karena takut kehabisan promo", "score": 1}
+        ]
+    },
+    {
+        "question": "Kamu ingin mengikuti kursus online yang bermanfaat, tapi biayanya cukup besar. Bagaimana solusimu?",
+        "options": [
+            {"text": "Menabung dulu sampai cukup untuk ikut kursus", "score": 4},
+            {"text": "Mencari kursus alternatif yang lebih murah atau gratis", "score": 3},
+            {"text": "Memaksakan diri membayar meskipun uangnya pas-pasan", "score": 2},
+            {"text": "Mengabaikan kesempatan belajar karena tidak ingin mengeluarkan uang", "score": 1}
+        ]
+    },
+    {
+        "question": "Kamu diajak berlibur dengan teman-teman, tetapi itu di luar anggaranmu. Apa yang kamu lakukan?",
+        "options": [
+            {"text": "Menolak dan menyimpan uang untuk keperluan lain", "score": 4},
+            {"text": "Mengajak teman-teman mencari opsi liburan yang lebih hemat", "score": 3},
+            {"text": "Mengikuti liburan meskipun harus mengorbankan tabungan", "score": 2},
+            {"text": "Berutang atau meminjam uang hanya agar bisa ikut", "score": 1}
+        ]
+    },
+    {
+        "question": "Kamu ingin membeli sesuatu yang mahal, tetapi tidak punya cukup uang. Apa yang kamu lakukan?",
+        "options": [
+            {"text": "Menabung dulu sampai cukup tanpa mengganggu keuangan lainnya", "score": 4},
+            {"text": "Mencari cara mendapatkan uang tambahan sebelum membeli", "score": 3},
+            {"text": "Menggunakan tabungan yang seharusnya untuk keperluan lain", "score": 2},
+            {"text": "Meminjam uang atau berutang tanpa rencana pembayaran", "score": 1}
+        ]
+    },
+    {
+        "question": "Kamu ditawari cicilan nol persen untuk membeli barang elektronik baru. Apa keputusanmu?",
+        "options": [
+            {"text": "Membeli hanya jika benar-benar dibutuhkan dan mampu membayar cicilannya", "score": 4},
+            {"text": "Memanfaatkan cicilan tetapi tetap menyisihkan uang untuk menabung", "score": 3},
+            {"text": "Mengambil cicilan tanpa pertimbangan anggaran bulanan", "score": 2},
+            {"text": "Menggunakan cicilan untuk membeli barang hanya karena ingin terlihat keren", "score": 1}
+        ]
+    },
+    {
+        "question": "Kamu ingin membeli tiket konser idola favoritmu, tetapi uangmu terbatas. Apa yang kamu lakukan?",
+        "options": [
+            {"text": "Menabung jauh-jauh hari agar tidak mengganggu keuangan lainnya", "score": 4},
+            {"text": "Mencari tiket dengan harga lebih murah dan menyesuaikan budget", "score": 3},
+            {"text": "Menggunakan uang tabungan yang seharusnya untuk kebutuhan lain", "score": 2},
+            {"text": "Berutang atau meminta uang tambahan dari orang tua tanpa alasan jelas", "score": 1}
+        ]
+    },
+    {
+        "question": "Kamu ingin membeli game terbaru, tapi harganya cukup mahal. Apa yang kamu lakukan?",
+        "options": [
+            {"text": "Menunggu diskon atau mencari alternatif lebih murah", "score": 4},
+            {"text": "Membeli jika memang memiliki cukup uang tanpa mengorbankan hal lain", "score": 3},
+            {"text": "Memaksakan membeli meskipun uangnya sebenarnya untuk kebutuhan lain", "score": 2},
+            {"text": "Berutang atau meminjam uang untuk membeli game tersebut", "score": 1}
+        ]
+    },
+    {
+        "question": "Kamu sering membeli jajanan kekinian yang harganya cukup mahal. Apa strategi terbaik?",
+        "options": [
+            {"text": "Membatasi pengeluaran untuk jajan dan memilih yang benar-benar disukai", "score": 4},
+            {"text": "Menyisihkan anggaran khusus untuk jajan agar tetap terkendali", "score": 3},
+            {"text": "Mengurangi jajan tapi tetap sering membeli karena gengsi", "score": 2},
+            {"text": "Terus membeli jajanan viral tanpa peduli anggaran", "score": 1}
+        ]
+    },
+    {
+        "question": "Uang bulananmu hampir habis sebelum waktunya. Apa yang akan kamu lakukan?",
+        "options": [
+            {"text": "Mengevaluasi pengeluaran dan belajar mengatur uang lebih baik", "score": 4},
+            {"text": "Mengurangi pengeluaran untuk hal-hal yang tidak mendesak", "score": 3},
+            {"text": "Meminjam uang ke teman untuk bertahan hingga bulan berikutnya", "score": 2},
+            {"text": "Menghabiskan uang tanpa berpikir ulang dan berharap ada solusi nanti", "score": 1}
+        ]
+    },
+    {
+        "question": "Kamu mendapat penghasilan tambahan dari pekerjaan sampingan. Bagaimana cara mengelolanya?",
+        "options": [
+            {"text": "Menabung sebagian besar dan menggunakan sedikit untuk hiburan", "score": 4},
+            {"text": "Menggunakan sebagian untuk kebutuhan dan sebagian untuk kesenangan", "score": 3},
+            {"text": "Menghabiskan seluruhnya untuk membeli barang yang diinginkan", "score": 2},
+            {"text": "Menggunakannya tanpa perencanaan hingga tidak ada yang tersisa", "score": 1}
+        ]
+    },
+    {
+        "question": "Kamu ingin membeli sepatu baru, tetapi yang lama masih bisa dipakai. Apa yang akan kamu lakukan?",
+        "options": [
+            {"text": "Menunggu sampai sepatu lama benar-benar rusak sebelum membeli yang baru", "score": 4},
+            {"text": "Membeli jika memang diperlukan dan mencari harga terbaik", "score": 3},
+            {"text": "Membeli hanya karena model baru lebih keren", "score": 2},
+            {"text": "Membeli dengan mengorbankan tabungan untuk keperluan lain", "score": 1}
+        ]
+    },
+    {
+        "question": "Kamu memiliki uang lebih dan ingin menginvestasikannya. Apa langkah terbaik?",
+        "options": [
+            {"text": "Mempelajari berbagai jenis investasi sebelum memutuskan", "score": 4},
+            {"text": "Memilih investasi yang sudah banyak direkomendasikan orang terpercaya", "score": 3},
+            {"text": "Berinvestasi hanya karena melihat orang lain melakukannya", "score": 2},
+            {"text": "Memasukkan semua uang ke investasi tanpa memahami risikonya", "score": 1}
+        ]
+    },
+    {
+        "question": "Kamu ingin menonton film di bioskop, tapi uangmu terbatas. Apa yang kamu lakukan?",
+        "options": [
+            {"text": "Menabung dulu atau menunggu promo agar lebih hemat", "score": 4},
+            {"text": "Menonton tetapi memilih tiket dengan harga lebih murah", "score": 3},
+            {"text": "Memaksakan diri meskipun harus mengorbankan anggaran lain", "score": 2},
+            {"text": "Meminjam uang hanya untuk bisa menonton film tersebut", "score": 1}
+        ]
+    },
+    {
+        "question": "Kamu ingin menabung, tetapi merasa sulit karena selalu tergoda belanja. Apa solusimu?",
+        "options": [
+            {"text": "Membuat anggaran bulanan dan disiplin mengikutinya", "score": 4},
+            {"text": "Menabung dengan sistem otomatis setiap menerima uang saku", "score": 3},
+            {"text": "Menabung hanya jika ada sisa uang di akhir bulan", "score": 2},
+            {"text": "Tidak menabung karena merasa uang lebih baik langsung digunakan", "score": 1}
+        ]
+    },
+    {
+        "question": "Kamu ingin membeli laptop baru, tetapi laptop lamamu masih bisa digunakan. Bagaimana cara terbaik?",
+        "options": [
+            {"text": "Menunggu sampai laptop lama benar-benar tidak bisa digunakan lagi", "score": 4},
+            {"text": "Membeli laptop baru jika memang sangat dibutuhkan untuk produktivitas", "score": 3},
+            {"text": "Membeli hanya karena ingin tampil lebih keren dengan gadget baru", "score": 2},
+            {"text": "Memaksakan membeli meskipun keuangan sedang tidak stabil", "score": 1}
+        ]
+    },
+    {
+        "question": "Kamu mendapat uang THR yang cukup besar. Apa yang kamu lakukan?",
+        "options": [
+            {"text": "Menabung sebagian besar dan menggunakan sedikit untuk keinginan", "score": 4},
+            {"text": "Menggunakan setengahnya untuk keperluan penting dan setengahnya untuk hiburan", "score": 3},
+            {"text": "Menghabiskan sebagian besar untuk membeli barang yang diinginkan", "score": 2},
+            {"text": "Langsung menghabiskan semuanya tanpa berpikir panjang", "score": 1}
+        ]
+    },
+    {
+        "question": "Kamu ingin membeli barang di marketplace, tapi tidak yakin dengan penjualnya. Apa langkah terbaik?",
+        "options": [
+            {"text": "Memeriksa ulasan dan memastikan penjual terpercaya sebelum membeli", "score": 4},
+            {"text": "Mencari toko resmi atau alternatif dengan reputasi lebih baik", "score": 3},
+            {"text": "Membeli langsung karena harganya murah tanpa riset lebih dulu", "score": 2},
+            {"text": "Mengabaikan keamanan transaksi dan membeli dari toko mana saja", "score": 1}
+        ]
+    },
+    {
+        "question": "Kamu sering tergoda untuk membeli barang-barang lucu atau unik yang sebenarnya tidak perlu. Apa solusimu",
+        "options": [
+            {"text": "Membuat daftar belanja dan hanya membeli barang yang benar-benar diperlukan", "score": 4},
+            {"text": "Mengatur batas anggaran khusus untuk belanja barang keinginan", "score": 3},
+            {"text": "Membeli barang tersebut jika ada uang lebih tanpa pertimbangan panjang", "score": 2},
+            {"text": "Menghabiskan uang untuk koleksi barang-barang unik tanpa perhitungan", "score": 1}
+        ]
+    },
+    {
+        "question": "Kamu ingin menghadiahkan sesuatu untuk teman yang ulang tahun, tetapi danamu terbatas. Apa yang kamu lakukan?",
+        "options": [
+            {"text": "Mencari hadiah yang bermakna tetapi tetap sesuai anggaran", "score": 4},
+            {"text": "Membuat hadiah sendiri atau memberi sesuatu yang lebih personal", "score": 3},
+            {"text": "Membeli hadiah mahal meskipun melebihi anggaran", "score": 2},
+            {"text": "Meminjam uang hanya untuk membeli hadiah mahal", "score": 1}
+        ]
+    }
+
+];
+        
+        let currentQuestionIndex = 0;
+        let totalScore = 0;
+        
+        function shuffleArray(array) {
+            return array.sort(() => Math.random() - 0.5);
+        }
+        
+        function nextQuestion() {
+            const quizContainer = document.getElementById("quiz");
+            const nextButton = document.getElementById("nextButton");
+            
+            if (currentQuestionIndex > 0) {
+                const options = document.getElementsByName("q");
+                let answered = false;
+                options.forEach(option => {
+                    if (option.checked) {
+                        totalScore += parseInt(option.value);
+                        answered = true;
+                    }
+                });
+                if (!answered) {
+                    alert("Harap pilih jawaban sebelum melanjutkan!");
+                    return;
+                }
+            }
+            
+            if (currentQuestionIndex < questions.length) {
+                const q = questions[currentQuestionIndex];
+                quizContainer.innerHTML = `<p class="question"><strong>${currentQuestionIndex + 1}. ${q.question}</strong></p>`;
+                
+                let shuffledOptions = shuffleArray(q.options);
+                shuffledOptions.forEach(option => {
+                    const label = document.createElement("label");
+                    label.innerHTML = `<input type="radio" name="q" value="${option.score}"> ${option.text}`;
+                    quizContainer.appendChild(label);
+                });
+                
+                nextButton.innerText = (currentQuestionIndex === questions.length - 1) ? "Lihat Hasil" : "Berikutnya";
+                currentQuestionIndex++;
+            } else {
+                showResult();
+            }
+        }
+        
+        function showResult() {
+            let resultText = "";
+            if (totalScore >= 80) {
+                resultText = "Kamu sangat bijak dalam mengelola keuangan!";
+            } else if (totalScore >= 60) {
+                resultText = "Keuanganmu cukup baik, tetapi masih ada beberapa keputusan impulsif.";
+            } else if (totalScore >= 40) {
+                resultText = "Kamu sering tergoda untuk menghabiskan uang tanpa perhitungan.";
+            } else {
+                resultText = "Keuanganmu kurang terkontrol, dan kamu perlu lebih disiplin dalam mengelola pengeluaran.";
+            }
+            document.getElementById("quiz").style.display = "none";
+            document.getElementById("nextButton").style.display = "none";
+            document.getElementById("result").innerText = `Skor Anda: ${totalScore}\n${resultText}`;
+            document.getElementById("result").style.display = "block";
+        }
+        
+        nextQuestion();
+    </script>
+</body>
+</html>
