@@ -7,25 +7,41 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
-            padding: 20px;
-            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to right, #1e3c72, #2a5298);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
         }
         .container {
             max-width: 600px;
-            margin: auto;
             background: white;
+            color: black;
             padding: 20px;
             border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
             text-align: center;
         }
-        h2 { text-align: center; }
-        .question { margin-bottom: 20px; text-align: left; }
-        .result { display: none; font-weight: bold; margin-top: 20px; }
-        button { display: block; width: 100%; padding: 10px; background: #28a745; color: white; border: none; cursor: pointer; margin-top: 10px; }
-        button:hover { background: #218838; }
-        label { display: block; text-align: left; }
+        h2 { text-align: center; color: #1e3c72; }
+        .question { margin-bottom: 20px; text-align: left; font-weight: bold; }
+        .result { display: none; font-weight: bold; margin-top: 20px; color: #1e3c72; }
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background: #1e3c72;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+        button:hover { background: #163e6c; }
+        label { display: block; text-align: left; margin: 5px 0; }
     </style>
 </head>
 <body>
@@ -38,7 +54,7 @@
     
     <script>
         const questions = [
-    {
+        {
         "question": "Kamu mendapat uang saku tambahan. Apa yang kamu lakukan?",
         "options": [
             {"text": "Menyisihkan sebagian untuk tabungan, sebagian untuk keinginan", "score": 3},
@@ -264,7 +280,7 @@
         ]
     }
 
-];
+        ];
         
         let currentQuestionIndex = 0;
         let totalScore = 0;
@@ -294,7 +310,7 @@
             
             if (currentQuestionIndex < questions.length) {
                 const q = questions[currentQuestionIndex];
-                quizContainer.innerHTML = `<p class="question"><strong>${currentQuestionIndex + 1}. ${q.question}</strong></p>`;
+                quizContainer.innerHTML = `<p class="question">${currentQuestionIndex + 1}. ${q.question}</p>`;
                 
                 let shuffledOptions = shuffleArray(q.options);
                 shuffledOptions.forEach(option => {
