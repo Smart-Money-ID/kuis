@@ -42,17 +42,37 @@
         }
         button:hover { background: #163e6c; }
         label { display: block; text-align: left; margin: 5px 0; }
+
+        .form-group {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 10px;
+    }
+    
+    .form-group label {
+        width: 80px;
+        font-weight: bold;
+    }
+
+.form-group input {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
     </style>
 </head>
 <body>
-    <div class="container" id="userForm">
-        <h2>Masukkan Identitas Anda</h2>
+    <div class="form-group">
         <label for="name">Nama:</label>
         <input type="text" id="name" required>
+    </div>
+    <div class="form-group">
         <label for="class">Kelas:</label>
         <input type="text" id="class" required>
-        <button onclick="startQuiz()">Mulai Kuis</button>
     </div>
+    <button onclick="startQuiz()">Mulai Kuis</button>
 
     <div class="container" id="quizContainer" style="display: none;">
         <h2>Kuis Smart Money</h2>
