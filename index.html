@@ -7,88 +7,38 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background: linear-gradient(to right, #1e3c72, #2a5298);
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f4f4f4;
         }
         .container {
             max-width: 600px;
+            margin: auto;
             background: white;
-            color: black;
             padding: 20px;
             border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             text-align: center;
         }
-        h2 { text-align: center; color: #1e3c72; }
-        .question { margin-bottom: 20px; text-align: left; font-weight: bold; }
-        .result { display: none; font-weight: bold; margin-top: 20px; color: #1e3c72; }
-        button {
-            display: block;
-            width: 100%;
-            padding: 10px;
-            background: #1e3c72;
-            color: white;
-            border: none;
-            cursor: pointer;
-            margin-top: 10px;
-            border-radius: 5px;
-            transition: 0.3s;
-        }
-        button:hover { background: #163e6c; }
-        label { display: block; text-align: left; margin: 5px 0; }
-
-        .form-group {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 10px;
-    }
-    
-    .form-group label {
-        width: 80px;
-        font-weight: bold;
-    }
-
-.form-group input {
-    flex: 1;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
+        h2 { text-align: center; }
+        .question { margin-bottom: 20px; text-align: left; }
+        .result { display: none; font-weight: bold; margin-top: 20px; }
+        button { display: block; width: 100%; padding: 10px; background: #28a745; color: white; border: none; cursor: pointer; margin-top: 10px; }
+        button:hover { background: #218838; }
+        label { display: block; text-align: left; }
     </style>
 </head>
 <body>
-    <div class="form-group">
-        <label for="name">Nama:</label>
-        <input type="text" id="name" required>
-    </div>
-    <div class="form-group">
-        <label for="class">Kelas:</label>
-        <input type="text" id="class" required>
-    </div>
-    <button onclick="startQuiz()">Mulai Kuis</button>
-
-    <div class="container" id="quizContainer" style="display: none;">
+    <div class="container">
         <h2>Kuis Smart Money</h2>
         <div id="quiz"></div>
-        <button id="nextButton" onclick="nextQuestion()">Berikutnya</button>
+        <button id="nextButton" onclick="nextQuestion()">Mulai</button>
         <div class="result" id="result"></div>
     </div>
     
     <script>
-        let userName = "";
-        let userClass = "";
-        let currentQuestionIndex = 0;
-        let totalScore = 0;
-
         const questions = [
-           {
+    {
         "question": "Kamu mendapat uang saku tambahan. Apa yang kamu lakukan?",
         "options": [
             {"text": "Menyisihkan sebagian untuk tabungan, sebagian untuk keinginan", "score": 3},
@@ -313,40 +263,16 @@
             {"text": "Meminjam uang hanya untuk membeli hadiah mahal", "score": 1}
         ]
     }
-        ];
-        function sendToGoogleSheets() {
-    const data = {
-        nama: userName,
-        kelas: userClass,
-        skor: totalScore
-    };
 
-    fetch("https://script.google.com/macros/s/AKfycbxWH8xS6-ccgIJgily8KiZbULsuU8AvrEnkpDsXbq9xDBO1H0hr5wtPaTek0RTFkCmYcQ/exec", {
-        method: "POST",
-        body: JSON.stringify(data),
-        headers: { "Content-Type": "application/json" }
-    })
-    .then(response => response.text())
-    .then(result => console.log("Data terkirim ke Google Sheets:", result))
-    .catch(error => console.error("Error mengirim data:", error));
-}
-
+];
+        
+        let currentQuestionIndex = 0;
+        let totalScore = 0;
+        
         function shuffleArray(array) {
             return array.sort(() => Math.random() - 0.5);
         }
         
-        function startQuiz() {
-            userName = document.getElementById("name").value;
-            userClass = document.getElementById("class").value;
-            if (userName === "" || userClass === "") {
-                alert("Harap isi nama dan kelas terlebih dahulu!");
-                return;
-            }
-            document.getElementById("userForm").style.display = "none";
-            document.getElementById("quizContainer").style.display = "block";
-            nextQuestion();
-        }
-
         function nextQuestion() {
             const quizContainer = document.getElementById("quiz");
             const nextButton = document.getElementById("nextButton");
@@ -368,7 +294,7 @@
             
             if (currentQuestionIndex < questions.length) {
                 const q = questions[currentQuestionIndex];
-                quizContainer.innerHTML = `<p class="question">${currentQuestionIndex + 1}. ${q.question}</p>`;
+                quizContainer.innerHTML = `<p class="question"><strong>${currentQuestionIndex + 1}. ${q.question}</strong></p>`;
                 
                 let shuffledOptions = shuffleArray(q.options);
                 shuffledOptions.forEach(option => {
@@ -397,10 +323,11 @@
             }
             document.getElementById("quiz").style.display = "none";
             document.getElementById("nextButton").style.display = "none";
-            document.getElementById("result").innerText = `Nama: ${userName}\nKelas: ${userClass}\n\nSkor Anda: ${totalScore}\n${resultText}`;
+            document.getElementById("result").innerText = `Skor Anda: ${totalScore}\n${resultText}`;
             document.getElementById("result").style.display = "block";
-            sendToGoogleSheets();
         }
+        
+        nextQuestion();
     </script>
 </body>
 </html>
